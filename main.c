@@ -138,7 +138,8 @@ int nsProcess(int16_t *buffer, uint32_t sampleRate, uint64_t samplesCount, uint3
     if (samplesCount == 0)
         return -1;
 
-    /* 音频帧帧长为 10ms, 如果 10ms 的采样点个数小于 160, 则
+    /* 8K  采样率音频侦长为 20ms, 即 50fps */
+    /* 16K 采样率音频侦长为 10ms, 即 100fps */
     size_t samples = MIN(160, sampleRate / 100);
     if (samples == 0)
         return -1;
