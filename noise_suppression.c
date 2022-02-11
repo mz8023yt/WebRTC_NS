@@ -20,89 +20,91 @@
 const float epsilon = 1e-7f;
 const float epsilon_squ = 1e-12f;
 // hybrib Hanning & flat window
-static const float kBlocks80w128[128] = {
-        (float) 0.00000000, (float) 0.03271908, (float) 0.06540313, (float) 0.09801714, (float) 0.13052619,
-        (float) 0.16289547, (float) 0.19509032, (float) 0.22707626, (float) 0.25881905, (float) 0.29028468,
-        (float) 0.32143947, (float) 0.35225005, (float) 0.38268343, (float) 0.41270703, (float) 0.44228869,
-        (float) 0.47139674, (float) 0.50000000, (float) 0.52806785, (float) 0.55557023, (float) 0.58247770,
-        (float) 0.60876143, (float) 0.63439328, (float) 0.65934582, (float) 0.68359230, (float) 0.70710678,
-        (float) 0.72986407, (float) 0.75183981, (float) 0.77301045, (float) 0.79335334, (float) 0.81284668,
-        (float) 0.83146961, (float) 0.84920218, (float) 0.86602540, (float) 0.88192126, (float) 0.89687274,
-        (float) 0.91086382, (float) 0.92387953, (float) 0.93590593, (float) 0.94693013, (float) 0.95694034,
-        (float) 0.96592583, (float) 0.97387698, (float) 0.98078528, (float) 0.98664333, (float) 0.99144486,
-        (float) 0.99518473, (float) 0.99785892, (float) 0.99946459, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 0.99946459, (float) 0.99785892, (float) 0.99518473, (float) 0.99144486,
-        (float) 0.98664333, (float) 0.98078528, (float) 0.97387698, (float) 0.96592583, (float) 0.95694034,
-        (float) 0.94693013, (float) 0.93590593, (float) 0.92387953, (float) 0.91086382, (float) 0.89687274,
-        (float) 0.88192126, (float) 0.86602540, (float) 0.84920218, (float) 0.83146961, (float) 0.81284668,
-        (float) 0.79335334, (float) 0.77301045, (float) 0.75183981, (float) 0.72986407, (float) 0.70710678,
-        (float) 0.68359230, (float) 0.65934582, (float) 0.63439328, (float) 0.60876143, (float) 0.58247770,
-        (float) 0.55557023, (float) 0.52806785, (float) 0.50000000, (float) 0.47139674, (float) 0.44228869,
-        (float) 0.41270703, (float) 0.38268343, (float) 0.35225005, (float) 0.32143947, (float) 0.29028468,
-        (float) 0.25881905, (float) 0.22707626, (float) 0.19509032, (float) 0.16289547, (float) 0.13052619,
-        (float) 0.09801714, (float) 0.06540313, (float) 0.03271908
+static const float kBlocks80w128[128] =
+{
+    (float) 0.00000000, (float) 0.03271908, (float) 0.06540313, (float) 0.09801714, (float) 0.13052619,
+    (float) 0.16289547, (float) 0.19509032, (float) 0.22707626, (float) 0.25881905, (float) 0.29028468,
+    (float) 0.32143947, (float) 0.35225005, (float) 0.38268343, (float) 0.41270703, (float) 0.44228869,
+    (float) 0.47139674, (float) 0.50000000, (float) 0.52806785, (float) 0.55557023, (float) 0.58247770,
+    (float) 0.60876143, (float) 0.63439328, (float) 0.65934582, (float) 0.68359230, (float) 0.70710678,
+    (float) 0.72986407, (float) 0.75183981, (float) 0.77301045, (float) 0.79335334, (float) 0.81284668,
+    (float) 0.83146961, (float) 0.84920218, (float) 0.86602540, (float) 0.88192126, (float) 0.89687274,
+    (float) 0.91086382, (float) 0.92387953, (float) 0.93590593, (float) 0.94693013, (float) 0.95694034,
+    (float) 0.96592583, (float) 0.97387698, (float) 0.98078528, (float) 0.98664333, (float) 0.99144486,
+    (float) 0.99518473, (float) 0.99785892, (float) 0.99946459, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 0.99946459, (float) 0.99785892, (float) 0.99518473, (float) 0.99144486,
+    (float) 0.98664333, (float) 0.98078528, (float) 0.97387698, (float) 0.96592583, (float) 0.95694034,
+    (float) 0.94693013, (float) 0.93590593, (float) 0.92387953, (float) 0.91086382, (float) 0.89687274,
+    (float) 0.88192126, (float) 0.86602540, (float) 0.84920218, (float) 0.83146961, (float) 0.81284668,
+    (float) 0.79335334, (float) 0.77301045, (float) 0.75183981, (float) 0.72986407, (float) 0.70710678,
+    (float) 0.68359230, (float) 0.65934582, (float) 0.63439328, (float) 0.60876143, (float) 0.58247770,
+    (float) 0.55557023, (float) 0.52806785, (float) 0.50000000, (float) 0.47139674, (float) 0.44228869,
+    (float) 0.41270703, (float) 0.38268343, (float) 0.35225005, (float) 0.32143947, (float) 0.29028468,
+    (float) 0.25881905, (float) 0.22707626, (float) 0.19509032, (float) 0.16289547, (float) 0.13052619,
+    (float) 0.09801714, (float) 0.06540313, (float) 0.03271908
 };
 
 // hybrib Hanning & flat window
-static const float kBlocks160w256[256] = {
-        (float) 0.00000000, (float) 0.01636173, (float) 0.03271908, (float) 0.04906767, (float) 0.06540313,
-        (float) 0.08172107, (float) 0.09801714, (float) 0.11428696, (float) 0.13052619, (float) 0.14673047,
-        (float) 0.16289547, (float) 0.17901686, (float) 0.19509032, (float) 0.21111155, (float) 0.22707626,
-        (float) 0.24298018, (float) 0.25881905, (float) 0.27458862, (float) 0.29028468, (float) 0.30590302,
-        (float) 0.32143947, (float) 0.33688985, (float) 0.35225005, (float) 0.36751594, (float) 0.38268343,
-        (float) 0.39774847, (float) 0.41270703, (float) 0.42755509, (float) 0.44228869, (float) 0.45690388,
-        (float) 0.47139674, (float) 0.48576339, (float) 0.50000000, (float) 0.51410274, (float) 0.52806785,
-        (float) 0.54189158, (float) 0.55557023, (float) 0.56910015, (float) 0.58247770, (float) 0.59569930,
-        (float) 0.60876143, (float) 0.62166057, (float) 0.63439328, (float) 0.64695615, (float) 0.65934582,
-        (float) 0.67155895, (float) 0.68359230, (float) 0.69544264, (float) 0.70710678, (float) 0.71858162,
-        (float) 0.72986407, (float) 0.74095113, (float) 0.75183981, (float) 0.76252720, (float) 0.77301045,
-        (float) 0.78328675, (float) 0.79335334, (float) 0.80320753, (float) 0.81284668, (float) 0.82226822,
-        (float) 0.83146961, (float) 0.84044840, (float) 0.84920218, (float) 0.85772861, (float) 0.86602540,
-        (float) 0.87409034, (float) 0.88192126, (float) 0.88951608, (float) 0.89687274, (float) 0.90398929,
-        (float) 0.91086382, (float) 0.91749450, (float) 0.92387953, (float) 0.93001722, (float) 0.93590593,
-        (float) 0.94154407, (float) 0.94693013, (float) 0.95206268, (float) 0.95694034, (float) 0.96156180,
-        (float) 0.96592583, (float) 0.97003125, (float) 0.97387698, (float) 0.97746197, (float) 0.98078528,
-        (float) 0.98384601, (float) 0.98664333, (float) 0.98917651, (float) 0.99144486, (float) 0.99344778,
-        (float) 0.99518473, (float) 0.99665524, (float) 0.99785892, (float) 0.99879546, (float) 0.99946459,
-        (float) 0.99986614, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
-        (float) 1.00000000, (float) 0.99986614, (float) 0.99946459, (float) 0.99879546, (float) 0.99785892,
-        (float) 0.99665524, (float) 0.99518473, (float) 0.99344778, (float) 0.99144486, (float) 0.98917651,
-        (float) 0.98664333, (float) 0.98384601, (float) 0.98078528, (float) 0.97746197, (float) 0.97387698,
-        (float) 0.97003125, (float) 0.96592583, (float) 0.96156180, (float) 0.95694034, (float) 0.95206268,
-        (float) 0.94693013, (float) 0.94154407, (float) 0.93590593, (float) 0.93001722, (float) 0.92387953,
-        (float) 0.91749450, (float) 0.91086382, (float) 0.90398929, (float) 0.89687274, (float) 0.88951608,
-        (float) 0.88192126, (float) 0.87409034, (float) 0.86602540, (float) 0.85772861, (float) 0.84920218,
-        (float) 0.84044840, (float) 0.83146961, (float) 0.82226822, (float) 0.81284668, (float) 0.80320753,
-        (float) 0.79335334, (float) 0.78328675, (float) 0.77301045, (float) 0.76252720, (float) 0.75183981,
-        (float) 0.74095113, (float) 0.72986407, (float) 0.71858162, (float) 0.70710678, (float) 0.69544264,
-        (float) 0.68359230, (float) 0.67155895, (float) 0.65934582, (float) 0.64695615, (float) 0.63439328,
-        (float) 0.62166057, (float) 0.60876143, (float) 0.59569930, (float) 0.58247770, (float) 0.56910015,
-        (float) 0.55557023, (float) 0.54189158, (float) 0.52806785, (float) 0.51410274, (float) 0.50000000,
-        (float) 0.48576339, (float) 0.47139674, (float) 0.45690388, (float) 0.44228869, (float) 0.42755509,
-        (float) 0.41270703, (float) 0.39774847, (float) 0.38268343, (float) 0.36751594, (float) 0.35225005,
-        (float) 0.33688985, (float) 0.32143947, (float) 0.30590302, (float) 0.29028468, (float) 0.27458862,
-        (float) 0.25881905, (float) 0.24298018, (float) 0.22707626, (float) 0.21111155, (float) 0.19509032,
-        (float) 0.17901686, (float) 0.16289547, (float) 0.14673047, (float) 0.13052619, (float) 0.11428696,
-        (float) 0.09801714, (float) 0.08172107, (float) 0.06540313, (float) 0.04906767, (float) 0.03271908,
-        (float) 0.01636173
+static const float kBlocks160w256[256] =
+{
+    (float) 0.00000000, (float) 0.01636173, (float) 0.03271908, (float) 0.04906767, (float) 0.06540313,
+    (float) 0.08172107, (float) 0.09801714, (float) 0.11428696, (float) 0.13052619, (float) 0.14673047,
+    (float) 0.16289547, (float) 0.17901686, (float) 0.19509032, (float) 0.21111155, (float) 0.22707626,
+    (float) 0.24298018, (float) 0.25881905, (float) 0.27458862, (float) 0.29028468, (float) 0.30590302,
+    (float) 0.32143947, (float) 0.33688985, (float) 0.35225005, (float) 0.36751594, (float) 0.38268343,
+    (float) 0.39774847, (float) 0.41270703, (float) 0.42755509, (float) 0.44228869, (float) 0.45690388,
+    (float) 0.47139674, (float) 0.48576339, (float) 0.50000000, (float) 0.51410274, (float) 0.52806785,
+    (float) 0.54189158, (float) 0.55557023, (float) 0.56910015, (float) 0.58247770, (float) 0.59569930,
+    (float) 0.60876143, (float) 0.62166057, (float) 0.63439328, (float) 0.64695615, (float) 0.65934582,
+    (float) 0.67155895, (float) 0.68359230, (float) 0.69544264, (float) 0.70710678, (float) 0.71858162,
+    (float) 0.72986407, (float) 0.74095113, (float) 0.75183981, (float) 0.76252720, (float) 0.77301045,
+    (float) 0.78328675, (float) 0.79335334, (float) 0.80320753, (float) 0.81284668, (float) 0.82226822,
+    (float) 0.83146961, (float) 0.84044840, (float) 0.84920218, (float) 0.85772861, (float) 0.86602540,
+    (float) 0.87409034, (float) 0.88192126, (float) 0.88951608, (float) 0.89687274, (float) 0.90398929,
+    (float) 0.91086382, (float) 0.91749450, (float) 0.92387953, (float) 0.93001722, (float) 0.93590593,
+    (float) 0.94154407, (float) 0.94693013, (float) 0.95206268, (float) 0.95694034, (float) 0.96156180,
+    (float) 0.96592583, (float) 0.97003125, (float) 0.97387698, (float) 0.97746197, (float) 0.98078528,
+    (float) 0.98384601, (float) 0.98664333, (float) 0.98917651, (float) 0.99144486, (float) 0.99344778,
+    (float) 0.99518473, (float) 0.99665524, (float) 0.99785892, (float) 0.99879546, (float) 0.99946459,
+    (float) 0.99986614, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000, (float) 1.00000000,
+    (float) 1.00000000, (float) 0.99986614, (float) 0.99946459, (float) 0.99879546, (float) 0.99785892,
+    (float) 0.99665524, (float) 0.99518473, (float) 0.99344778, (float) 0.99144486, (float) 0.98917651,
+    (float) 0.98664333, (float) 0.98384601, (float) 0.98078528, (float) 0.97746197, (float) 0.97387698,
+    (float) 0.97003125, (float) 0.96592583, (float) 0.96156180, (float) 0.95694034, (float) 0.95206268,
+    (float) 0.94693013, (float) 0.94154407, (float) 0.93590593, (float) 0.93001722, (float) 0.92387953,
+    (float) 0.91749450, (float) 0.91086382, (float) 0.90398929, (float) 0.89687274, (float) 0.88951608,
+    (float) 0.88192126, (float) 0.87409034, (float) 0.86602540, (float) 0.85772861, (float) 0.84920218,
+    (float) 0.84044840, (float) 0.83146961, (float) 0.82226822, (float) 0.81284668, (float) 0.80320753,
+    (float) 0.79335334, (float) 0.78328675, (float) 0.77301045, (float) 0.76252720, (float) 0.75183981,
+    (float) 0.74095113, (float) 0.72986407, (float) 0.71858162, (float) 0.70710678, (float) 0.69544264,
+    (float) 0.68359230, (float) 0.67155895, (float) 0.65934582, (float) 0.64695615, (float) 0.63439328,
+    (float) 0.62166057, (float) 0.60876143, (float) 0.59569930, (float) 0.58247770, (float) 0.56910015,
+    (float) 0.55557023, (float) 0.54189158, (float) 0.52806785, (float) 0.51410274, (float) 0.50000000,
+    (float) 0.48576339, (float) 0.47139674, (float) 0.45690388, (float) 0.44228869, (float) 0.42755509,
+    (float) 0.41270703, (float) 0.39774847, (float) 0.38268343, (float) 0.36751594, (float) 0.35225005,
+    (float) 0.33688985, (float) 0.32143947, (float) 0.30590302, (float) 0.29028468, (float) 0.27458862,
+    (float) 0.25881905, (float) 0.24298018, (float) 0.22707626, (float) 0.21111155, (float) 0.19509032,
+    (float) 0.17901686, (float) 0.16289547, (float) 0.14673047, (float) 0.13052619, (float) 0.11428696,
+    (float) 0.09801714, (float) 0.08172107, (float) 0.06540313, (float) 0.04906767, (float) 0.03271908,
+    (float) 0.01636173
 };
 
 /*
@@ -136,39 +138,51 @@ static void rftfsub(size_t n, float *a, size_t nc, float *c);
 static void rftbsub(size_t n, float *a, size_t nc, float *c);
 
 
-void WebRtc_rdft(size_t n, int isgn, float *a, size_t *ip, float *w) {
+void WebRtc_rdft(size_t n, int isgn, float *a, size_t *ip, float *w)
+{
     size_t nw, nc;
     float xi;
 
     nw = ip[0];
-    if (n > (nw << 2)) {
+    if (n > (nw << 2))
+    {
         nw = n >> 2;
         makewt(nw, ip, w);
     }
     nc = ip[1];
-    if (n > (nc << 2)) {
+    if (n > (nc << 2))
+    {
         nc = n >> 2;
         makect(nc, ip, w + nw);
     }
-    if (isgn >= 0) {
-        if (n > 4) {
+    if (isgn >= 0)
+    {
+        if (n > 4)
+        {
             bitrv2(n, ip + 2, a);
             cftfsub(n, a, w);
             rftfsub(n, a, nc, w + nw);
-        } else if (n == 4) {
+        }
+        else if (n == 4)
+        {
             cftfsub(n, a, w);
         }
         xi = a[0] - a[1];
         a[0] += a[1];
         a[1] = xi;
-    } else {
+    }
+    else
+    {
         a[1] = 0.5f * (a[0] - a[1]);
         a[0] -= a[1];
-        if (n > 4) {
+        if (n > 4)
+        {
             rftbsub(n, a, nc, w + nw);
             bitrv2(n, ip + 2, a);
             cftbsub(n, a, w);
-        } else if (n == 4) {
+        }
+        else if (n == 4)
+        {
             cftfsub(n, a, w);
         }
     }
@@ -178,21 +192,25 @@ void WebRtc_rdft(size_t n, int isgn, float *a, size_t *ip, float *w) {
 
 
 
-static void makewt(size_t nw, size_t *ip, float *w) {
+static void makewt(size_t nw, size_t *ip, float *w)
+{
     size_t j, nwh;
     float delta, x, y;
 
     ip[0] = nw;
     ip[1] = 1;
-    if (nw > 2) {
+    if (nw > 2)
+    {
         nwh = nw >> 1;
         delta = atanf(1.f) / nwh;
         w[0] = 1;
         w[1] = 0;
         w[nwh] = cosf(delta * nwh);
         w[nwh + 1] = w[nwh];
-        if (nwh > 2) {
-            for (j = 2; j < nwh; j += 2) {
+        if (nwh > 2)
+        {
+            for (j = 2; j < nwh; j += 2)
+            {
                 x = cosf(delta * j);
                 y = sinf(delta * j);
                 w[j] = x;
@@ -206,17 +224,20 @@ static void makewt(size_t nw, size_t *ip, float *w) {
 }
 
 
-static void makect(size_t nc, size_t *ip, float *c) {
+static void makect(size_t nc, size_t *ip, float *c)
+{
     size_t j, nch;
     float delta;
 
     ip[1] = nc;
-    if (nc > 1) {
+    if (nc > 1)
+    {
         nch = nc >> 1;
         delta = atanf(1.f) / nch;
         c[0] = cosf(delta * nch);
         c[nch] = 0.5f * c[0];
-        for (j = 1; j < nch; j++) {
+        for (j = 1; j < nch; j++)
+        {
             c[j] = 0.5f * cosf(delta * j);
             c[nc - j] = 0.5f * sinf(delta * j);
         }
@@ -227,24 +248,30 @@ static void makect(size_t nc, size_t *ip, float *c) {
 /* -------- child routines -------- */
 
 
-static void bitrv2(size_t n, size_t *ip, float *a) {
+static void bitrv2(size_t n, size_t *ip, float *a)
+{
     size_t j, j1, k, k1, l, m, m2;
     float xr, xi, yr, yi;
 
     ip[0] = 0;
     l = n;
     m = 1;
-    while ((m << 3) < l) {
+    while ((m << 3) < l)
+    {
         l >>= 1;
-        for (j = 0; j < m; j++) {
+        for (j = 0; j < m; j++)
+        {
             ip[m + j] = ip[j] + l;
         }
         m <<= 1;
     }
     m2 = 2 * m;
-    if ((m << 3) == l) {
-        for (k = 0; k < m; k++) {
-            for (j = 0; j < k; j++) {
+    if ((m << 3) == l)
+    {
+        for (k = 0; k < m; k++)
+        {
+            for (j = 0; j < k; j++)
+            {
                 j1 = 2 * j + ip[k];
                 k1 = 2 * k + ip[j];
                 xr = a[j1];
@@ -297,9 +324,13 @@ static void bitrv2(size_t n, size_t *ip, float *a) {
             a[k1] = xr;
             a[k1 + 1] = xi;
         }
-    } else {
-        for (k = 1; k < m; k++) {
-            for (j = 0; j < k; j++) {
+    }
+    else
+    {
+        for (k = 1; k < m; k++)
+        {
+            for (j = 0; j < k; j++)
+            {
                 j1 = 2 * j + ip[k];
                 k1 = 2 * k + ip[j];
                 xr = a[j1];
@@ -325,21 +356,26 @@ static void bitrv2(size_t n, size_t *ip, float *a) {
     }
 }
 
-static void cftfsub(size_t n, float *a, float *w) {
+static void cftfsub(size_t n, float *a, float *w)
+{
     size_t j, j1, j2, j3, l;
     float x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
     l = 2;
-    if (n > 8) {
+    if (n > 8)
+    {
         cft1st(n, a, w);
         l = 8;
-        while ((l << 2) < n) {
+        while ((l << 2) < n)
+        {
             cftmdl(n, l, a, w);
             l <<= 2;
         }
     }
-    if ((l << 2) == n) {
-        for (j = 0; j < l; j += 2) {
+    if ((l << 2) == n)
+    {
+        for (j = 0; j < l; j += 2)
+        {
             j1 = j + l;
             j2 = j1 + l;
             j3 = j2 + l;
@@ -360,8 +396,11 @@ static void cftfsub(size_t n, float *a, float *w) {
             a[j3] = x1r + x3i;
             a[j3 + 1] = x1i - x3r;
         }
-    } else {
-        for (j = 0; j < l; j += 2) {
+    }
+    else
+    {
+        for (j = 0; j < l; j += 2)
+        {
             j1 = j + l;
             x0r = a[j] - a[j1];
             x0i = a[j + 1] - a[j1 + 1];
@@ -374,21 +413,26 @@ static void cftfsub(size_t n, float *a, float *w) {
 }
 
 
-static void cftbsub(size_t n, float *a, float *w) {
+static void cftbsub(size_t n, float *a, float *w)
+{
     size_t j, j1, j2, j3, l;
     float x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
     l = 2;
-    if (n > 8) {
+    if (n > 8)
+    {
         cft1st(n, a, w);
         l = 8;
-        while ((l << 2) < n) {
+        while ((l << 2) < n)
+        {
             cftmdl(n, l, a, w);
             l <<= 2;
         }
     }
-    if ((l << 2) == n) {
-        for (j = 0; j < l; j += 2) {
+    if ((l << 2) == n)
+    {
+        for (j = 0; j < l; j += 2)
+        {
             j1 = j + l;
             j2 = j1 + l;
             j3 = j2 + l;
@@ -409,8 +453,11 @@ static void cftbsub(size_t n, float *a, float *w) {
             a[j3] = x1r + x3i;
             a[j3 + 1] = x1i + x3r;
         }
-    } else {
-        for (j = 0; j < l; j += 2) {
+    }
+    else
+    {
+        for (j = 0; j < l; j += 2)
+        {
             j1 = j + l;
             x0r = a[j] - a[j1];
             x0i = -a[j + 1] + a[j1 + 1];
@@ -423,7 +470,8 @@ static void cftbsub(size_t n, float *a, float *w) {
 }
 
 
-static void cft1st(size_t n, float *a, float *w) {
+static void cft1st(size_t n, float *a, float *w)
+{
     size_t j, k1, k2;
     float wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
     float x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
@@ -466,7 +514,8 @@ static void cft1st(size_t n, float *a, float *w) {
     a[14] = wk1r * (x0i - x0r);
     a[15] = wk1r * (x0i + x0r);
     k1 = 0;
-    for (j = 16; j < n; j += 16) {
+    for (j = 16; j < n; j += 16)
+    {
         k1 += 2;
         k2 = 2 * k1;
         wk2r = w[k1];
@@ -527,13 +576,15 @@ static void cft1st(size_t n, float *a, float *w) {
 }
 
 
-static void cftmdl(size_t n, size_t l, float *a, float *w) {
+static void cftmdl(size_t n, size_t l, float *a, float *w)
+{
     size_t j, j1, j2, j3, k, k1, k2, m, m2;
     float wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
     float x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
     m = l << 2;
-    for (j = 0; j < l; j += 2) {
+    for (j = 0; j < l; j += 2)
+    {
         j1 = j + l;
         j2 = j1 + l;
         j3 = j2 + l;
@@ -555,7 +606,8 @@ static void cftmdl(size_t n, size_t l, float *a, float *w) {
         a[j3 + 1] = x1i - x3r;
     }
     wk1r = w[2];
-    for (j = m; j < l + m; j += 2) {
+    for (j = m; j < l + m; j += 2)
+    {
         j1 = j + l;
         j2 = j1 + l;
         j3 = j2 + l;
@@ -582,7 +634,8 @@ static void cftmdl(size_t n, size_t l, float *a, float *w) {
     }
     k1 = 0;
     m2 = 2 * m;
-    for (k = m2; k < n; k += m2) {
+    for (k = m2; k < n; k += m2)
+    {
         k1 += 2;
         k2 = 2 * k1;
         wk2r = w[k1];
@@ -591,7 +644,8 @@ static void cftmdl(size_t n, size_t l, float *a, float *w) {
         wk1i = w[k2 + 1];
         wk3r = wk1r - 2 * wk2i * wk1i;
         wk3i = 2 * wk2i * wk1r - wk1i;
-        for (j = k; j < l + k; j += 2) {
+        for (j = k; j < l + k; j += 2)
+        {
             j1 = j + l;
             j2 = j1 + l;
             j3 = j2 + l;
@@ -622,7 +676,8 @@ static void cftmdl(size_t n, size_t l, float *a, float *w) {
         wk1i = w[k2 + 3];
         wk3r = wk1r - 2 * wk2r * wk1i;
         wk3i = 2 * wk2r * wk1r - wk1i;
-        for (j = k + m; j < l + (k + m); j += 2) {
+        for (j = k + m; j < l + (k + m); j += 2)
+        {
             j1 = j + l;
             j2 = j1 + l;
             j3 = j2 + l;
@@ -653,14 +708,16 @@ static void cftmdl(size_t n, size_t l, float *a, float *w) {
 }
 
 
-static void rftfsub(size_t n, float *a, size_t nc, float *c) {
+static void rftfsub(size_t n, float *a, size_t nc, float *c)
+{
     size_t j, k, kk, ks, m;
     float wkr, wki, xr, xi, yr, yi;
 
     m = n >> 1;
     ks = 2 * nc / m;
     kk = 0;
-    for (j = 2; j < m; j += 2) {
+    for (j = 2; j < m; j += 2)
+    {
         k = n - j;
         kk += ks;
         wkr = 0.5f - c[nc - kk];
@@ -677,7 +734,8 @@ static void rftfsub(size_t n, float *a, size_t nc, float *c) {
 }
 
 
-static void rftbsub(size_t n, float *a, size_t nc, float *c) {
+static void rftbsub(size_t n, float *a, size_t nc, float *c)
+{
     size_t j, k, kk, ks, m;
     float wkr, wki, xr, xi, yr, yi;
 
@@ -685,7 +743,8 @@ static void rftbsub(size_t n, float *a, size_t nc, float *c) {
     m = n >> 1;
     ks = 2 * nc / m;
     kk = 0;
-    for (j = 2; j < m; j += 2) {
+    for (j = 2; j < m; j += 2)
+    {
         k = n - j;
         kk += ks;
         wkr = 0.5f - c[nc - kk];
@@ -704,7 +763,8 @@ static void rftbsub(size_t n, float *a, size_t nc, float *c) {
 
 
 // Set Feature Extraction Parameters.
-static void set_feature_extraction_parameters(NoiseSuppressionC *self) {
+static void set_feature_extraction_parameters(NoiseSuppressionC *self)
+{
     // Bin size of histogram.
     self->featureExtractionParams.binSizeLrt = 0.1f;
     self->featureExtractionParams.binSizeSpecFlat = 0.05f;
@@ -726,9 +786,9 @@ static void set_feature_extraction_parameters(NoiseSuppressionC *self) {
     // Limit on spacing of two highest peaks in histogram: spacing determined by
     // bin size.
     self->featureExtractionParams.limitPeakSpacingSpecFlat =
-            2 * self->featureExtractionParams.binSizeSpecFlat;
+        2 * self->featureExtractionParams.binSizeSpecFlat;
     self->featureExtractionParams.limitPeakSpacingSpecDiff =
-            2 * self->featureExtractionParams.binSizeSpecDiff;
+        2 * self->featureExtractionParams.binSizeSpecDiff;
 
     // Limit on relevance of second peak.
     self->featureExtractionParams.limitPeakWeightsSpecFlat = 0.5f;
@@ -749,31 +809,39 @@ static void set_feature_extraction_parameters(NoiseSuppressionC *self) {
 
     // Criteria of weight of histogram peak to accept/reject feature.
     self->featureExtractionParams.thresWeightSpecFlat =
-            (int) (0.3 * (self->modelUpdatePars[1]));  // For spectral flatness.
+        (int) (0.3 * (self->modelUpdatePars[1]));  // For spectral flatness.
     self->featureExtractionParams.thresWeightSpecDiff =
-            (int) (0.3 * (self->modelUpdatePars[1]));  // For spectral difference.
+        (int) (0.3 * (self->modelUpdatePars[1]));  // For spectral difference.
 }
 
 // Initialize state.
-int WebRtcNs_InitCore(NoiseSuppressionC *self, uint32_t fs) {
+int WebRtcNs_InitCore(NoiseSuppressionC *self, uint32_t fs)
+{
     int i;
     // Check for valid pointer.
-    if (self == NULL) {
+    if (self == NULL)
+    {
         return -1;
     }
     // Initialization of struct.
-    if (fs == 8000 || fs == 16000) {
+    if (fs == 8000 || fs == 16000)
+    {
         self->fs = fs;
-    } else {
+    }
+    else
+    {
         return -1;
     }
     self->windShift = 0;
     // We only support 10ms frames.
-    if (fs == 8000) {
+    if (fs == 8000)
+    {
         self->blockLen = 80;
         self->anaLen = 128;
         self->window = kBlocks80w128;
-    } else {
+    }
+    else
+    {
         self->blockLen = 160;
         self->anaLen = 256;
         self->window = kBlocks160w256;
@@ -796,20 +864,23 @@ int WebRtcNs_InitCore(NoiseSuppressionC *self, uint32_t fs) {
 
     // For quantile noise estimation.
     memset(self->quantile, 0, sizeof(float) * HALF_ANAL_BLOCKL);
-    for (i = 0; i < SIMULT * HALF_ANAL_BLOCKL; i++) {
+    for (i = 0; i < SIMULT * HALF_ANAL_BLOCKL; i++)
+    {
         self->lquantile[i] = 8.f;
         self->density[i] = 0.3f;
     }
 
-    for (i = 0; i < SIMULT; i++) {
+    for (i = 0; i < SIMULT; i++)
+    {
         self->counter[i] =
-                (int) floorf((float) (END_STARTUP_LONG * (i + 1)) / (float) SIMULT);
+            (int) floorf((float) (END_STARTUP_LONG * (i + 1)) / (float) SIMULT);
     }
 
     self->updates = 0;
 
     // Wiener filter initialization.
-    for (i = 0; i < HALF_ANAL_BLOCKL; i++) {
+    for (i = 0; i < HALF_ANAL_BLOCKL; i++)
+    {
         self->smooth[i] = 1.f;
         self->log_lut[i] = log1pf((float) i);
         self->log_lut_sqr[i] = self->log_lut[i] * self->log_lut[i];
@@ -834,7 +905,8 @@ int WebRtcNs_InitCore(NoiseSuppressionC *self, uint32_t fs) {
     memset(self->speechProb, 0, sizeof(float) * HALF_ANAL_BLOCKL);
     // Initial average magnitude spectrum.
     memset(self->initMagnEst, 0, sizeof(float) * HALF_ANAL_BLOCKL);
-    for (i = 0; i < HALF_ANAL_BLOCKL; i++) {
+    for (i = 0; i < HALF_ANAL_BLOCKL; i++)
+    {
         // Smooth LR (same as threshold).
         self->logLrtTimeAvg[i] = LRT_FEATURE_THR;
     }
@@ -901,45 +973,59 @@ int WebRtcNs_InitCore(NoiseSuppressionC *self, uint32_t fs) {
 // Estimate noise.
 static void NoiseEstimation(NoiseSuppressionC *self,
                             float *lmagn,
-                            float *noise) {
+                            float *noise)
+{
     size_t i, s, offset = 0;
     float delta;
 
-    if (self->updates < END_STARTUP_LONG) {
+    if (self->updates < END_STARTUP_LONG)
+    {
         self->updates++;
     }
 
     // Loop over simultaneous estimates.
-    for (s = 0; s < SIMULT; s++) {
+    for (s = 0; s < SIMULT; s++)
+    {
         offset = s * self->magnLen;
         float norm_counter_weight = 1.f / (self->counter[s] + 1.f);
         float density_plus_weight = norm_counter_weight / (2.f * WIDTH);
         // newquantest(...)
-        for (i = 0; i < self->magnLen; i++) {
+        for (i = 0; i < self->magnLen; i++)
+        {
             // Compute delta.
-            if (self->density[offset + i] > 1.0) {
+            if (self->density[offset + i] > 1.0)
+            {
                 delta = FACTOR / self->density[offset + i];
-            } else {
+            }
+            else
+            {
                 delta = FACTOR;
             }
             // Update log quantile estimate.
-            if (lmagn[i] > self->lquantile[offset + i]) {
+            if (lmagn[i] > self->lquantile[offset + i])
+            {
                 self->lquantile[offset + i] += QUANTILE * delta * norm_counter_weight;
-            } else {
+            }
+            else
+            {
                 self->lquantile[offset + i] -= (1.f - QUANTILE) * delta * norm_counter_weight;
             }
 
             // Update density estimate.
-            if (fabsf(lmagn[i] - self->lquantile[offset + i]) < WIDTH) {
+            if (fabsf(lmagn[i] - self->lquantile[offset + i]) < WIDTH)
+            {
                 self->density[offset + i] =
-                        self->counter[s] * self->density[offset + i] * norm_counter_weight + density_plus_weight;
+                    self->counter[s] * self->density[offset + i] * norm_counter_weight + density_plus_weight;
             }
         }  // End loop over magnitude spectrum.
 
-        if (self->counter[s] >= END_STARTUP_LONG) {
+        if (self->counter[s] >= END_STARTUP_LONG)
+        {
             self->counter[s] = 0;
-            if (self->updates >= END_STARTUP_LONG) {
-                for (i = 0; i < self->magnLen; i++) {
+            if (self->updates >= END_STARTUP_LONG)
+            {
+                for (i = 0; i < self->magnLen; i++)
+                {
                     self->quantile[i] = expf(self->lquantile[offset + i]);
                 }
             }
@@ -949,13 +1035,17 @@ static void NoiseEstimation(NoiseSuppressionC *self,
     }  // End loop over simultaneous estimates.
 
     // Sequentially update the noise during startup.
-    if (self->updates < END_STARTUP_LONG) {
+    if (self->updates < END_STARTUP_LONG)
+    {
         // Use the last "s" to get noise during startup that differ from zero.
-        for (i = 0; i < self->magnLen; i++) {
+        for (i = 0; i < self->magnLen; i++)
+        {
             self->quantile[i] = expf(self->lquantile[offset + i]);
         }
         memcpy(noise, self->quantile, self->magnLen * sizeof(*noise));
-    } else {
+    }
+    else
+    {
         memcpy(noise, self->quantile, self->magnLen * sizeof(*noise));
     }
 
@@ -967,11 +1057,12 @@ static void NoiseEstimation(NoiseSuppressionC *self,
 // Thresholds and weights are extracted every window.
 // |flag| = 0 updates histogram only, |flag| = 1 computes the threshold/weights.
 // Threshold and weights are returned in: self->priorModelPars.
-static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
+static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag)
+{
     int i, useFeatureSpecFlat, useFeatureSpecDiff, numHistLrt;
     int maxPeak1, maxPeak2;
     int weightPeak1SpecFlat, weightPeak2SpecFlat, weightPeak1SpecDiff,
-            weightPeak2SpecDiff;
+        weightPeak2SpecDiff;
 
     float binMid, featureSum;
     float posPeak1SpecFlat, posPeak2SpecFlat, posPeak1SpecDiff, posPeak2SpecDiff;
@@ -983,27 +1074,31 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
     // diff_feature = self->featureData[4];
 
     // Update histograms.
-    if (flag == 0) {
+    if (flag == 0)
+    {
         // LRT
         if ((self->featureData[3] <
-             HIST_PAR_EST * self->featureExtractionParams.binSizeLrt) &&
-            (self->featureData[3] >= 0.0)) {
+                HIST_PAR_EST * self->featureExtractionParams.binSizeLrt) &&
+                (self->featureData[3] >= 0.0))
+        {
             i = (int) (self->featureData[3] /
                        self->featureExtractionParams.binSizeLrt);
             self->histLrt[i]++;
         }
         // Spectral flatness.
         if ((self->featureData[0] <
-             HIST_PAR_EST * self->featureExtractionParams.binSizeSpecFlat) &&
-            (self->featureData[0] >= 0.0)) {
+                HIST_PAR_EST * self->featureExtractionParams.binSizeSpecFlat) &&
+                (self->featureData[0] >= 0.0))
+        {
             i = (int) (self->featureData[0] /
                        self->featureExtractionParams.binSizeSpecFlat);
             self->histSpecFlat[i]++;
         }
         // Spectral difference.
         if ((self->featureData[4] <
-             HIST_PAR_EST * self->featureExtractionParams.binSizeSpecDiff) &&
-            (self->featureData[4] >= 0.0)) {
+                HIST_PAR_EST * self->featureExtractionParams.binSizeSpecDiff) &&
+                (self->featureData[4] >= 0.0))
+        {
             i = (int) (self->featureData[4] /
                        self->featureExtractionParams.binSizeSpecDiff);
             self->histSpecDiff[i]++;
@@ -1011,40 +1106,49 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
     }
 
     // Extract parameters for speech/noise probability.
-    if (flag == 1) {
+    if (flag == 1)
+    {
         // LRT feature: compute the average over
         // self->featureExtractionParams.rangeAvgHistLrt.
         avgHistLrt = 0;
         avgHistLrtCompl = 0;
         avgSquareHistLrt = 0;
         numHistLrt = 0;
-        for (i = 0; i < HIST_PAR_EST; i++) {
+        for (i = 0; i < HIST_PAR_EST; i++)
+        {
             binMid = ((float) i + 0.5f) * self->featureExtractionParams.binSizeLrt;
-            if (binMid <= self->featureExtractionParams.rangeAvgHistLrt) {
+            if (binMid <= self->featureExtractionParams.rangeAvgHistLrt)
+            {
                 avgHistLrt += self->histLrt[i] * binMid;
                 numHistLrt += self->histLrt[i];
             }
             avgSquareHistLrt += self->histLrt[i] * binMid * binMid;
             avgHistLrtCompl += self->histLrt[i] * binMid;
         }
-        if (numHistLrt > 0) {
+        if (numHistLrt > 0)
+        {
             avgHistLrt = avgHistLrt / ((float) numHistLrt);
         }
         avgHistLrtCompl = avgHistLrtCompl / ((float) self->modelUpdatePars[1]);
         avgSquareHistLrt = avgSquareHistLrt / ((float) self->modelUpdatePars[1]);
         fluctLrt = avgSquareHistLrt - avgHistLrt * avgHistLrtCompl;
         // Get threshold for LRT feature.
-        if (fluctLrt < self->featureExtractionParams.thresFluctLrt) {
+        if (fluctLrt < self->featureExtractionParams.thresFluctLrt)
+        {
             // Very low fluctuation, so likely noise.
             self->priorModelPars[0] = self->featureExtractionParams.maxLrt;
-        } else {
+        }
+        else
+        {
             self->priorModelPars[0] =
-                    self->featureExtractionParams.factor1ModelPars * avgHistLrt;
+                self->featureExtractionParams.factor1ModelPars * avgHistLrt;
             // Check if value is within min/max range.
-            if (self->priorModelPars[0] < self->featureExtractionParams.minLrt) {
+            if (self->priorModelPars[0] < self->featureExtractionParams.minLrt)
+            {
                 self->priorModelPars[0] = self->featureExtractionParams.minLrt;
             }
-            if (self->priorModelPars[0] > self->featureExtractionParams.maxLrt) {
+            if (self->priorModelPars[0] > self->featureExtractionParams.maxLrt)
+            {
                 self->priorModelPars[0] = self->featureExtractionParams.maxLrt;
             }
         }
@@ -1060,9 +1164,11 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
         weightPeak2SpecFlat = 0;
 
         // Peaks for flatness.
-        for (i = 0; i < HIST_PAR_EST; i++) {
+        for (i = 0; i < HIST_PAR_EST; i++)
+        {
             binMid = (i + 0.5f) * self->featureExtractionParams.binSizeSpecFlat;
-            if (self->histSpecFlat[i] > maxPeak1) {
+            if (self->histSpecFlat[i] > maxPeak1)
+            {
                 // Found new "first" peak.
                 maxPeak2 = maxPeak1;
                 weightPeak2SpecFlat = weightPeak1SpecFlat;
@@ -1071,7 +1177,9 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
                 maxPeak1 = self->histSpecFlat[i];
                 weightPeak1SpecFlat = self->histSpecFlat[i];
                 posPeak1SpecFlat = binMid;
-            } else if (self->histSpecFlat[i] > maxPeak2) {
+            }
+            else if (self->histSpecFlat[i] > maxPeak2)
+            {
                 // Found new "second" peak.
                 maxPeak2 = self->histSpecFlat[i];
                 weightPeak2SpecFlat = self->histSpecFlat[i];
@@ -1087,10 +1195,12 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
         weightPeak1SpecDiff = 0;
         weightPeak2SpecDiff = 0;
         // Peaks for spectral difference.
-        for (i = 0; i < HIST_PAR_EST; i++) {
+        for (i = 0; i < HIST_PAR_EST; i++)
+        {
             binMid =
-                    ((float) i + 0.5f) * self->featureExtractionParams.binSizeSpecDiff;
-            if (self->histSpecDiff[i] > maxPeak1) {
+                ((float) i + 0.5f) * self->featureExtractionParams.binSizeSpecDiff;
+            if (self->histSpecDiff[i] > maxPeak1)
+            {
                 // Found new "first" peak.
                 maxPeak2 = maxPeak1;
                 weightPeak2SpecDiff = weightPeak1SpecDiff;
@@ -1099,7 +1209,9 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
                 maxPeak1 = self->histSpecDiff[i];
                 weightPeak1SpecDiff = self->histSpecDiff[i];
                 posPeak1SpecDiff = binMid;
-            } else if (self->histSpecDiff[i] > maxPeak2) {
+            }
+            else if (self->histSpecDiff[i] > maxPeak2)
+            {
                 // Found new "second" peak.
                 maxPeak2 = self->histSpecDiff[i];
                 weightPeak2SpecDiff = self->histSpecDiff[i];
@@ -1111,29 +1223,34 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
         useFeatureSpecFlat = 1;
         // Merge the two peaks if they are close.
         if ((fabsf(posPeak2SpecFlat - posPeak1SpecFlat) <
-             self->featureExtractionParams.limitPeakSpacingSpecFlat) &&
-            (weightPeak2SpecFlat >
-             self->featureExtractionParams.limitPeakWeightsSpecFlat *
-             weightPeak1SpecFlat)) {
+                self->featureExtractionParams.limitPeakSpacingSpecFlat) &&
+                (weightPeak2SpecFlat >
+                 self->featureExtractionParams.limitPeakWeightsSpecFlat *
+                 weightPeak1SpecFlat))
+        {
             weightPeak1SpecFlat += weightPeak2SpecFlat;
             posPeak1SpecFlat = 0.5f * (posPeak1SpecFlat + posPeak2SpecFlat);
         }
         // Reject if weight of peaks is not large enough, or peak value too small.
         if (weightPeak1SpecFlat <
-            self->featureExtractionParams.thresWeightSpecFlat ||
-            posPeak1SpecFlat < self->featureExtractionParams.thresPosSpecFlat) {
+                self->featureExtractionParams.thresWeightSpecFlat ||
+                posPeak1SpecFlat < self->featureExtractionParams.thresPosSpecFlat)
+        {
             useFeatureSpecFlat = 0;
         }
         // If selected, get the threshold.
-        if (useFeatureSpecFlat == 1) {
+        if (useFeatureSpecFlat == 1)
+        {
             // Compute the threshold.
             self->priorModelPars[1] =
-                    self->featureExtractionParams.factor2ModelPars * posPeak1SpecFlat;
+                self->featureExtractionParams.factor2ModelPars * posPeak1SpecFlat;
             // Check if value is within min/max range.
-            if (self->priorModelPars[1] < self->featureExtractionParams.minSpecFlat) {
+            if (self->priorModelPars[1] < self->featureExtractionParams.minSpecFlat)
+            {
                 self->priorModelPars[1] = self->featureExtractionParams.minSpecFlat;
             }
-            if (self->priorModelPars[1] > self->featureExtractionParams.maxSpecFlat) {
+            if (self->priorModelPars[1] > self->featureExtractionParams.maxSpecFlat)
+            {
                 self->priorModelPars[1] = self->featureExtractionParams.maxSpecFlat;
             }
         }
@@ -1143,33 +1260,38 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
         useFeatureSpecDiff = 1;
         // Merge the two peaks if they are close.
         if ((fabsf(posPeak2SpecDiff - posPeak1SpecDiff) <
-             self->featureExtractionParams.limitPeakSpacingSpecDiff) &&
-            (weightPeak2SpecDiff >
-             self->featureExtractionParams.limitPeakWeightsSpecDiff *
-             weightPeak1SpecDiff)) {
+                self->featureExtractionParams.limitPeakSpacingSpecDiff) &&
+                (weightPeak2SpecDiff >
+                 self->featureExtractionParams.limitPeakWeightsSpecDiff *
+                 weightPeak1SpecDiff))
+        {
             weightPeak1SpecDiff += weightPeak2SpecDiff;
             posPeak1SpecDiff = 0.5f * (posPeak1SpecDiff + posPeak2SpecDiff);
         }
         // Get the threshold value.
         self->priorModelPars[3] =
-                self->featureExtractionParams.factor1ModelPars * posPeak1SpecDiff;
+            self->featureExtractionParams.factor1ModelPars * posPeak1SpecDiff;
         // Reject if weight of peaks is not large enough.
         if (weightPeak1SpecDiff <
-            self->featureExtractionParams.thresWeightSpecDiff) {
+                self->featureExtractionParams.thresWeightSpecDiff)
+        {
             useFeatureSpecDiff = 0;
         }
         // Check if value is within min/max range.
-        if (self->priorModelPars[3] < self->featureExtractionParams.minSpecDiff) {
+        if (self->priorModelPars[3] < self->featureExtractionParams.minSpecDiff)
+        {
             self->priorModelPars[3] = self->featureExtractionParams.minSpecDiff;
         }
-        if (self->priorModelPars[3] > self->featureExtractionParams.maxSpecDiff) {
+        if (self->priorModelPars[3] > self->featureExtractionParams.maxSpecDiff)
+        {
             self->priorModelPars[3] = self->featureExtractionParams.maxSpecDiff;
         }
         // Done with spectral difference feature.
 
         // Don't use template feature if fluctuation of LRT feature is very low:
         // most likely just noise state.
-        if (fluctLrt < self->featureExtractionParams.thresFluctLrt) {
+        if (fluctLrt < self->featureExtractionParams.thresFluctLrt)
+        {
             useFeatureSpecDiff = 0;
         }
 
@@ -1183,8 +1305,10 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
         self->priorModelPars[6] = ((float) useFeatureSpecDiff) * self->priorModelPars[4];
 
         // Set hists to zero for next update.
-        if (self->modelUpdatePars[0] >= 1) {
-            for (i = 0; i < HIST_PAR_EST; i++) {
+        if (self->modelUpdatePars[0] >= 1)
+        {
+            for (i = 0; i < HIST_PAR_EST; i++)
+            {
                 self->histLrt[i] = 0;
                 self->histSpecFlat[i] = 0;
                 self->histSpecDiff[i] = 0;
@@ -1197,7 +1321,8 @@ static void FeatureParameterExtraction(NoiseSuppressionC *self, int flag) {
 // |magnIn| is the magnitude spectrum.
 // Spectral flatness is returned in self->featureData[0].
 static void ComputeSpectralFlatness(NoiseSuppressionC *self,
-                                    const float *magnIn, const float *logmagnIn) {
+                                    const float *magnIn, const float *logmagnIn)
+{
     size_t i;
     size_t shiftLP = 1;  // Option to remove first bin(s) from spectral measures.
     float avgSpectralFlatnessNum, avgSpectralFlatnessDen, spectralTmp;
@@ -1206,15 +1331,20 @@ static void ComputeSpectralFlatness(NoiseSuppressionC *self,
     // For flatness.
     avgSpectralFlatnessNum = 0;
     avgSpectralFlatnessDen = self->sumMagn;
-    for (i = 0; i < shiftLP; i++) {
+    for (i = 0; i < shiftLP; i++)
+    {
         avgSpectralFlatnessDen -= magnIn[i];
     }
     // Compute log of ratio of the geometric to arithmetic mean: check for log(0)
     // case.
-    for (i = shiftLP; i < self->magnLen; i++) {
-        if (magnIn[i] > 0.0) {
+    for (i = shiftLP; i < self->magnLen; i++)
+    {
+        if (magnIn[i] > 0.0)
+        {
             avgSpectralFlatnessNum += logmagnIn[i];
-        } else {
+        }
+        else
+        {
             self->featureData[0] -= SPECT_FL_TAVG * self->featureData[0];
             return;
         }
@@ -1243,22 +1373,25 @@ static void ComputeSnr(const NoiseSuppressionC *self,
                        const float *magn,
                        const float *noise,
                        float *snrLocPrior, float *logSnrLocPrior,
-                       float *snrLocPost) {
+                       float *snrLocPost)
+{
     size_t i;
 
-    for (i = 0; i < self->magnLen; i++) {
+    for (i = 0; i < self->magnLen; i++)
+    {
         // Previous post SNR.
         // Previous estimate: based on previous frame with gain filter.
         float previousEstimateStsa = (self->magnPrevAnalyze[i] * self->smooth[i]) / (self->noisePrev[i] + epsilon);
         // Post SNR.
         snrLocPost[i] = 0.f;
-        if (magn[i] > noise[i]) {
+        if (magn[i] > noise[i])
+        {
             snrLocPost[i] = (magn[i] - noise[i]) / (noise[i] + epsilon);
         }
         // DD estimate is sum of two terms: current estimate and previous estimate.
         // Directed decision update of snrPrior.
         snrLocPrior[i] = 2.f * (
-                DD_PR_SNR * previousEstimateStsa + (1.f - DD_PR_SNR) * snrLocPost[i]);
+                             DD_PR_SNR * previousEstimateStsa + (1.f - DD_PR_SNR) * snrLocPost[i]);
         logSnrLocPrior[i] = log1pf(snrLocPrior[i]);
     }  // End of loop over frequencies.
 }
@@ -1269,7 +1402,8 @@ static void ComputeSnr(const NoiseSuppressionC *self,
 // The reference/template spectrum is self->magnAvgPause[i].
 // Returns (normalized) spectral difference in self->featureData[4].
 static void ComputeSpectralDifference(NoiseSuppressionC *self,
-                                      const float *magnIn) {
+                                      const float *magnIn)
+{
     // avgDiffNormMagn = var(magnIn) - cov(magnIn, magnAvgPause)^2 /
     // var(magnAvgPause)
     size_t i;
@@ -1278,7 +1412,8 @@ static void ComputeSpectralDifference(NoiseSuppressionC *self,
     avgPause = 0;
     avgMagn = self->sumMagn;
     // Compute average quantities.
-    for (i = 0; i < self->magnLen; i++) {
+    for (i = 0; i < self->magnLen; i++)
+    {
         // Conservative smooth noise spectrum from pause frames.
         avgPause += self->magnAvgPause[i];
     }
@@ -1289,7 +1424,8 @@ static void ComputeSpectralDifference(NoiseSuppressionC *self,
     varPause = 0;
     varMagn = 0;
     // Compute variance and covariance quantities.
-    for (i = 0; i < self->magnLen; i++) {
+    for (i = 0; i < self->magnLen; i++)
+    {
         const float avgPauseDiff = self->magnAvgPause[i] - avgPause;
         const float avgMagnDiff = magnIn[i] - avgMagn;
         covMagnPause += avgMagnDiff * avgPauseDiff;
@@ -1303,11 +1439,11 @@ static void ComputeSpectralDifference(NoiseSuppressionC *self,
     self->featureData[6] += self->signalEnergy;
 
     avgDiffNormMagn =
-            varMagn - (covMagnPause * covMagnPause) / (varPause + epsilon);
+        varMagn - (covMagnPause * covMagnPause) / (varPause + epsilon);
     // Normalize and compute time-avg update of difference feature.
     avgDiffNormMagn = avgDiffNormMagn / (self->featureData[5] + epsilon);
     self->featureData[4] +=
-            SPECT_DIFF_TAVG * (avgDiffNormMagn - self->featureData[4]);
+        SPECT_DIFF_TAVG * (avgDiffNormMagn - self->featureData[4]);
 }
 
 // Compute speech/noise probability.
@@ -1319,7 +1455,8 @@ static void ComputeSpectralDifference(NoiseSuppressionC *self,
 static void SpeechNoiseProb(NoiseSuppressionC *self,
                             float *probSpeechFinal,
                             const float *snrLocPrior, const float *logSnrLocPrior,
-                            const float *snrLocPost) {
+                            const float *snrLocPost)
+{
     size_t i;
     int sgnMap;
     float invLrt, gainPrior, indPrior;
@@ -1351,7 +1488,8 @@ static void SpeechNoiseProb(NoiseSuppressionC *self,
     // Compute feature based on average LR factor.
     // This is the average over all frequencies of the smooth log LRT.
     logLrtTimeAvgKsum = 0;
-    for (i = 0; i < self->magnLen; i++) {
+    for (i = 0; i < self->magnLen; i++)
+    {
         besselTmp = (snrLocPost[i] * snrLocPrior[i] + snrLocPrior[i]) / (snrLocPrior[i] + 1.f + epsilon);
         self->logLrtTimeAvg[i] += LRT_TAVG * (besselTmp - logSnrLocPrior[i] - self->logLrtTimeAvg[i]);
         logLrtTimeAvgKsum += self->logLrtTimeAvg[i];
@@ -1364,7 +1502,8 @@ static void SpeechNoiseProb(NoiseSuppressionC *self,
     // Average LRT feature.
     widthPrior = widthPrior0;
     // Use larger width in tanh map for pause regions.
-    if (logLrtTimeAvgKsum < threshPrior0) {
+    if (logLrtTimeAvgKsum < threshPrior0)
+    {
         widthPrior = widthPrior1;
     }
     // Compute indicator function: sigmoid map.
@@ -1374,10 +1513,12 @@ static void SpeechNoiseProb(NoiseSuppressionC *self,
 
     widthPrior = widthPrior0;
     // Use larger width in tanh map for pause regions.
-    if (sgnMap == 1 && (self->featureData[0] > threshPrior1)) {
+    if (sgnMap == 1 && (self->featureData[0] > threshPrior1))
+    {
         widthPrior = widthPrior1;
     }
-    if (sgnMap == -1 && (self->featureData[0] < threshPrior1)) {
+    if (sgnMap == -1 && (self->featureData[0] < threshPrior1))
+    {
         widthPrior = widthPrior1;
     }
     // Compute indicator function: sigmoid map.
@@ -1386,7 +1527,8 @@ static void SpeechNoiseProb(NoiseSuppressionC *self,
     // For template spectrum-difference.
     widthPrior = widthPrior0;
     // Use larger width in tanh map for pause regions.
-    if (self->featureData[4] < threshPrior2) {
+    if (self->featureData[4] < threshPrior2)
+    {
         widthPrior = widthPrior2;
     }
     // Compute indicator function: sigmoid map.
@@ -1400,16 +1542,19 @@ static void SpeechNoiseProb(NoiseSuppressionC *self,
     // Compute the prior probability.
     self->priorSpeechProb += PRIOR_UPDATE * (indPrior - self->priorSpeechProb);
     // Make sure probabilities are within range: keep floor to 0.01.
-    if (self->priorSpeechProb > 1.f) {
+    if (self->priorSpeechProb > 1.f)
+    {
         self->priorSpeechProb = 1.f;
     }
-    if (self->priorSpeechProb < 0.01f) {
+    if (self->priorSpeechProb < 0.01f)
+    {
         self->priorSpeechProb = 0.01f;
     }
 
     // Final speech probability: combine prior model with LR factor:.
     gainPrior = (1.f - self->priorSpeechProb) / (self->priorSpeechProb + epsilon);
-    for (i = 0; i < self->magnLen; i++) {
+    for (i = 0; i < self->magnLen; i++)
+    {
         invLrt = expf(-self->logLrtTimeAvg[i]);
         invLrt = gainPrior * invLrt;
         probSpeechFinal[i] = 1.f / (1.f + invLrt);
@@ -1422,7 +1567,8 @@ static void SpeechNoiseProb(NoiseSuppressionC *self,
 //   * |updateParsFlag| is an update flag for parameters.
 static void FeatureUpdate(NoiseSuppressionC *self,
                           const float *magn, const float *lmagn,
-                          int updateParsFlag) {
+                          int updateParsFlag)
+{
     // Compute spectral flatness on input spectrum.
     ComputeSpectralFlatness(self, magn, lmagn);
     // Compute difference of input spectrum with learned/estimated noise spectrum.
@@ -1431,27 +1577,33 @@ static void FeatureUpdate(NoiseSuppressionC *self,
     // features).
     // Parameters are extracted once every window time.
     // (=self->modelUpdatePars[1])
-    if (updateParsFlag >= 1) {
+    if (updateParsFlag >= 1)
+    {
         // Counter update.
         self->modelUpdatePars[3]--;
         // Update histogram.
-        if (self->modelUpdatePars[3] > 0) {
+        if (self->modelUpdatePars[3] > 0)
+        {
             FeatureParameterExtraction(self, 0);
         }
         // Compute model parameters.
-        if (self->modelUpdatePars[3] == 0) {
+        if (self->modelUpdatePars[3] == 0)
+        {
             FeatureParameterExtraction(self, 1);
             self->modelUpdatePars[3] = self->modelUpdatePars[1];
             // If wish to update only once, set flag to zero.
-            if (updateParsFlag == 1) {
+            if (updateParsFlag == 1)
+            {
                 self->modelUpdatePars[0] = 0;
-            } else {
+            }
+            else
+            {
                 // Update every window:
                 // Get normalization for spectral difference for next window estimate.
                 self->featureData[6] =
-                        self->featureData[6] / ((float) self->modelUpdatePars[1]);
+                    self->featureData[6] / ((float) self->modelUpdatePars[1]);
                 self->featureData[5] =
-                        0.5f * (self->featureData[6] + self->featureData[5]);
+                    0.5f * (self->featureData[6] + self->featureData[5]);
                 self->featureData[6] = 0.f;
             }
         }
@@ -1467,7 +1619,8 @@ static void FeatureUpdate(NoiseSuppressionC *self,
 //   * |noise| is the updated noise magnitude spectrum estimate.
 static void UpdateNoiseEstimate(NoiseSuppressionC *self,
                                 const float *magn,
-                                float *noise) {
+                                float *noise)
+{
     size_t i;
     float probSpeech, probNonSpeech;
     // Time-avg parameter for noise update.
@@ -1475,36 +1628,43 @@ static void UpdateNoiseEstimate(NoiseSuppressionC *self,
     float gammaNoiseOld;
     float noiseUpdateTmp;
 
-    for (i = 0; i < self->magnLen; i++) {
+    for (i = 0; i < self->magnLen; i++)
+    {
         probSpeech = self->speechProb[i];
         probNonSpeech = 1.f - probSpeech;
         // Temporary noise update:
         // Use it for speech frames if update value is less than previous.
         noiseUpdateTmp = gammaNoiseTmp * self->noisePrev[i] +
                          (1.f - gammaNoiseTmp) * (probNonSpeech * magn[i] +
-                                                  probSpeech * self->noisePrev[i]);
+                                 probSpeech * self->noisePrev[i]);
         // Time-constant based on speech/noise state.
         gammaNoiseOld = gammaNoiseTmp;
         gammaNoiseTmp = NOISE_UPDATE;
         // Increase gamma (i.e., less noise update) for frame likely to be speech.
-        if (probSpeech > PROB_RANGE) {
+        if (probSpeech > PROB_RANGE)
+        {
             gammaNoiseTmp = SPEECH_UPDATE;
         }
         // Conservative noise update.
-        if (probSpeech < PROB_RANGE) {
+        if (probSpeech < PROB_RANGE)
+        {
             self->magnAvgPause[i] += GAMMA_PAUSE * (magn[i] - self->magnAvgPause[i]);
         }
         // Noise update.
-        if (gammaNoiseTmp == gammaNoiseOld) {
+        if (gammaNoiseTmp == gammaNoiseOld)
+        {
             noise[i] = noiseUpdateTmp;
-        } else {
+        }
+        else
+        {
             noise[i] = gammaNoiseTmp * self->noisePrev[i] +
                        (1.f - gammaNoiseTmp) * (probNonSpeech * magn[i] +
                                                 probSpeech * self->noisePrev[i]);
             // Allow for noise update downwards:
             // If noise update decreases the noise, it is safe, so allow it to
             // happen.
-            if (noiseUpdateTmp < noise[i]) {
+            if (noiseUpdateTmp < noise[i])
+            {
                 noise[i] = noiseUpdateTmp;
             }
         }
@@ -1521,18 +1681,23 @@ static void UpdateNoiseEstimate(NoiseSuppressionC *self,
 static void UpdateBuffer(const int16_t *frame,
                          size_t frame_length,
                          size_t buffer_length,
-                         float *buffer) {
+                         float *buffer)
+{
     assert(buffer_length < 2 * frame_length);
 
     memcpy(buffer,
            buffer + frame_length,
            sizeof(*buffer) * (buffer_length - frame_length));
-    if (frame) {
+    if (frame)
+    {
         int i = 0;
-        for (i = 0; i < frame_length; ++i) {
+        for (i = 0; i < frame_length; ++i)
+        {
             buffer[buffer_length - frame_length + i] = frame[i];
         }
-    } else {
+    }
+    else
+    {
         memset(buffer + buffer_length - frame_length,
                0,
                sizeof(*buffer) * frame_length);
@@ -1556,7 +1721,8 @@ static void FFT(NoiseSuppressionC *self,
                 size_t magnitude_length,
                 float *real,
                 float *imag,
-                float *magn, float *lmagn, int prev_calc, float *signalEnergy, float *sumMagn) {
+                float *magn, float *lmagn, int prev_calc, float *signalEnergy, float *sumMagn)
+{
     size_t i;
 
     assert(magnitude_length == time_data_length / 2 + 1);
@@ -1570,7 +1736,8 @@ static void FFT(NoiseSuppressionC *self,
     real[magnitude_length - 1] = time_data[1];
     magn[magnitude_length - 1] = fabsf(real[magnitude_length - 1]);
     float *time_data_ptr = time_data + 2;
-    if (prev_calc == 1) {
+    if (prev_calc == 1)
+    {
         float first = real[0] * real[0] + imag[0] * imag[0];
         float last = real[magnitude_length - 1] * real[magnitude_length - 1] +
                      imag[magnitude_length - 1] * imag[magnitude_length - 1];
@@ -1578,7 +1745,8 @@ static void FFT(NoiseSuppressionC *self,
         *sumMagn = sqrtf(first + epsilon_squ) + 2.f + sqrtf(last + epsilon_squ);
         lmagn[0] = log1pf(magn[0]);
         lmagn[magnitude_length - 1] = log1pf(magn[magnitude_length - 1]);
-        for (i = 1; i < magnitude_length - 1; ++i) {
+        for (i = 1; i < magnitude_length - 1; ++i)
+        {
             real[i] = time_data_ptr[0];
             imag[i] = time_data_ptr[1];
             const float energy = real[i] * real[i] + imag[i] * imag[i];
@@ -1589,8 +1757,11 @@ static void FFT(NoiseSuppressionC *self,
             lmagn[i] = log1pf(magn[i]);
             time_data_ptr += 2;
         }
-    } else {
-        for (i = 1; i < magnitude_length - 1; ++i) {
+    }
+    else
+    {
+        for (i = 1; i < magnitude_length - 1; ++i)
+        {
             real[i] = time_data_ptr[0];
             imag[i] = time_data_ptr[1];
             // Magnitude spectrum.
@@ -1615,7 +1786,8 @@ static void IFFT(NoiseSuppressionC *self,
                  const float *imag,
                  size_t magnitude_length,
                  size_t time_data_length,
-                 float *time_data) {
+                 float *time_data)
+{
     size_t i;
 
     assert(time_data_length == 2 * (magnitude_length - 1));
@@ -1623,14 +1795,16 @@ static void IFFT(NoiseSuppressionC *self,
     time_data[0] = real[0];
     time_data[1] = real[magnitude_length - 1];
     float *time_data_ptr = time_data + 2;
-    for (i = 1; i < magnitude_length - 1; ++i) {
+    for (i = 1; i < magnitude_length - 1; ++i)
+    {
         time_data_ptr[0] = real[i];
         time_data_ptr[1] = imag[i];
         time_data_ptr += 2;
     }
     WebRtc_rdft(time_data_length, -1, time_data, self->ip, self->wfft);
     float norm = 2.f / time_data_length;
-    for (i = 0; i < time_data_length; ++i) {
+    for (i = 0; i < time_data_length; ++i)
+    {
         time_data[i] *= norm;  // FFT scaling.
     }
 }
@@ -1638,10 +1812,12 @@ static void IFFT(NoiseSuppressionC *self,
 static float WindowingEnergy(const float *window,
                              const float *data,
                              size_t length,
-                             float *data_windowed) {
+                             float *data_windowed)
+{
     size_t i;
     float energy = 0.f;
-    for (i = 0; i < length; ++i) {
+    for (i = 0; i < length; ++i)
+    {
         data_windowed[i] = window[i] * data[i];
         energy += data_windowed[i] * data_windowed[i];
     }
@@ -1653,11 +1829,13 @@ static float WindowingEnergy(const float *window,
 //   * |buffer| is the buffer over which the energy is calculated.
 //   * |length| is the length of the buffer.
 // Returns the calculated energy.
-static float Energy(const float *buffer, size_t length) {
+static float Energy(const float *buffer, size_t length)
+{
     size_t i;
     float energy = 0.f;
 
-    for (i = 0; i < length; ++i) {
+    for (i = 0; i < length; ++i)
+    {
         energy += buffer[i] * buffer[i];
     }
 
@@ -1672,16 +1850,19 @@ static float Energy(const float *buffer, size_t length) {
 //   * |theFilter| is the frequency response of the computed Wiener filter.
 static void ComputeDdBasedWienerFilter(const NoiseSuppressionC *self,
                                        const float *magn,
-                                       float *theFilter) {
+                                       float *theFilter)
+{
     size_t i;
     float snrPrior, previousEstimateStsa, currentEstimateStsa;
 
-    for (i = 0; i < self->magnLen; i++) {
+    for (i = 0; i < self->magnLen; i++)
+    {
         // Previous estimate: based on previous frame with gain filter.
         previousEstimateStsa = self->magnPrevProcess[i] * self->smooth[i] / (self->noisePrev[i] + epsilon);
         // Post and prior SNR.
         currentEstimateStsa = 0.f;
-        if (magn[i] > self->noise[i]) {
+        if (magn[i] > self->noise[i])
+        {
             currentEstimateStsa = (magn[i] - self->noise[i]) / (self->noise[i] + epsilon);
         }
         // DD estimate is sum of two terms: current estimate and previous estimate.
@@ -1697,35 +1878,46 @@ static void ComputeDdBasedWienerFilter(const NoiseSuppressionC *self,
 // |mode| = 0 is mild (6dB), |mode| = 1 is medium (10dB) and |mode| = 2 is
 // aggressive (15dB).
 // Returns 0 on success and -1 otherwise.
-int WebRtcNs_set_policy_core(NoiseSuppressionC *self, int mode) {
+int WebRtcNs_set_policy_core(NoiseSuppressionC *self, int mode)
+{
     // Allow for modes: 0, 1, 2, 3.
-    if (mode == 0) {
+    if (mode == 0)
+    {
         self->overdrive = 1.f;
         self->denoiseBound = 0.5f;
         self->gainmap = 0;
-    } else if (mode == 1) {
+    }
+    else if (mode == 1)
+    {
         // self->overdrive = 1.25f;
         self->overdrive = 1.f;
         self->denoiseBound = 0.25f;
         self->gainmap = 1;
-    } else if (mode == 2) {
+    }
+    else if (mode == 2)
+    {
         // self->overdrive = 1.25f;
         self->overdrive = 1.1f;
         self->denoiseBound = 0.125f;
         self->gainmap = 1;
-    } else if (mode == 3) {
+    }
+    else if (mode == 3)
+    {
         // self->overdrive = 1.3f;
         self->overdrive = 1.25f;
         self->denoiseBound = 0.09f;
         self->gainmap = 1;
-    } else {
+    }
+    else
+    {
         return -1;
     }
     self->aggrMode = mode;
     return 0;
 }
 
-void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
+void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame)
+{
     size_t i;
     const size_t kStartBand = 5;  // Skip first frequency bins during estimation.
     int updateParsFlag;
@@ -1753,7 +1945,8 @@ void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
     // Update analysis buffer for L band.
     UpdateBuffer(speechFrame, self->blockLen, self->anaLen, self->analyzeBuf);
     energy = WindowingEnergy(self->window, self->analyzeBuf, self->anaLen, winData);
-    if (energy == 0.0) {
+    if (energy == 0.0)
+    {
         // We want to avoid updating statistics in this case:
         // Updating feature statistics when we have zeros only will cause
         // thresholds to move towards zero signal situations. This in turn has the
@@ -1768,8 +1961,10 @@ void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
     self->blockInd++;  // Update the block index only when we process a block.
 
     FFT(self, winData, self->anaLen, self->magnLen, real, imag, magn, lmagn, 1, &signalEnergy, &sumMagn);
-    if (self->blockInd < END_STARTUP_SHORT) {
-        for (i = kStartBand; i < self->magnLen; i++) {
+    if (self->blockInd < END_STARTUP_SHORT)
+    {
+        for (i = kStartBand; i < self->magnLen; i++)
+        {
             sum_log_i += self->log_lut[i];
             sum_log_i_square += self->log_lut_sqr[i];
             sum_log_magn += lmagn[i];
@@ -1785,7 +1980,8 @@ void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
     const float norm = 1.f / (self->blockInd + 1.f);
     const float norm_end = 1.f / END_STARTUP_SHORT;
     // Compute simplified noise model during startup.
-    if (self->blockInd < END_STARTUP_SHORT) {
+    if (self->blockInd < END_STARTUP_SHORT)
+    {
         // Estimate White noise.
         self->whiteNoiseLevel += sumMagn * self->normMagnLen * self->overdrive;
         // Estimate Pink noise parameters.
@@ -1794,7 +1990,8 @@ void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
         tmpFloat2 = (sum_log_i_square * sum_log_magn - sum_log_i * sum_log_i_log_magn);
         tmpFloat3 = tmpFloat2 / tmpFloat1;
         // Constrain the estimated spectrum to be positive.
-        if (tmpFloat3 < 0.f) {
+        if (tmpFloat3 < 0.f)
+        {
             tmpFloat3 = 0.f;
         }
         self->pinkNoiseNumerator += tmpFloat3;
@@ -1802,15 +1999,19 @@ void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
         tmpFloat2 -= (self->magnLen - kStartBand) * sum_log_i_log_magn;
         tmpFloat3 = tmpFloat2 / tmpFloat1;
         // Constrain the pink noise power to be in the interval [0, 1].
-        if (tmpFloat3 < 0.f) {
+        if (tmpFloat3 < 0.f)
+        {
             tmpFloat3 = 0.f;
         }
-        if (tmpFloat3 > 1.f) {
+        if (tmpFloat3 > 1.f)
+        {
             tmpFloat3 = 1.f;
         }
         self->pinkNoiseExp += tmpFloat3;
-        if (self->pinkNoiseExp == 0.f) {
-            for (i = 0; i < self->magnLen; i++) {
+        if (self->pinkNoiseExp == 0.f)
+        {
+            for (i = 0; i < self->magnLen; i++)
+            {
                 // Estimate the background noise using the white and pink noise
                 // parameters.
                 self->parametricNoise[i] = self->whiteNoiseLevel;
@@ -1820,14 +2021,17 @@ void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
                 noise[i] += tmpFloat2 * norm;
                 noise[i] *= norm_end;
             }
-        } else {
+        }
+        else
+        {
             // Calculate frequency independent parts of parametric noise estimate.
 
             // Use pink noise estimate.
             parametric_num = expf(self->pinkNoiseNumerator * norm);
             parametric_num *= (float) (self->blockInd + 1);
             parametric_exp = self->pinkNoiseExp * norm;
-            for (i = 0; i < self->magnLen; i++) {
+            for (i = 0; i < self->magnLen; i++)
+            {
                 // Estimate the background noise using the white and pink noise
                 // parameters.
                 // Use pink noise estimate.
@@ -1843,7 +2047,8 @@ void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
     }
     // Compute average signal during END_STARTUP_LONG time:
     // used to normalize spectral difference measure.
-    if (self->blockInd < END_STARTUP_LONG) {
+    if (self->blockInd < END_STARTUP_LONG)
+    {
         self->featureData[5] *= self->blockInd;
         self->featureData[5] += signalEnergy;
         self->featureData[5] *= norm;
@@ -1864,7 +2069,8 @@ void WebRtcNs_AnalyzeCore(NoiseSuppressionC *self, const int16_t *speechFrame) {
 void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
                           const int16_t *const *speechFrame,
                           size_t num_bands,
-                          int16_t *const *outFrame) {
+                          int16_t *const *outFrame)
+{
     // Main routine for noise reduction.
     int flagHB = 0;
     size_t i, j;
@@ -1891,7 +2097,8 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
     const int16_t *const *speechFrameHB = NULL;
     int16_t *const *outFrameHB = NULL;
     size_t num_high_bands = 0;
-    if (num_bands > 1) {
+    if (num_bands > 1)
+    {
         speechFrameHB = &speechFrame[1];
         outFrameHB = &outFrame[1];
         num_high_bands = num_bands - 1;
@@ -1904,9 +2111,11 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
     // Update analysis buffer for L band.
     UpdateBuffer(speechFrame[0], self->blockLen, self->anaLen, self->dataBuf);
 
-    if (flagHB == 1) {
+    if (flagHB == 1)
+    {
         // Update analysis buffer for H bands.
-        for (i = 0; i < num_high_bands; ++i) {
+        for (i = 0; i < num_high_bands; ++i)
+        {
             UpdateBuffer(speechFrameHB[i],
                          self->blockLen,
                          self->anaLen,
@@ -1914,10 +2123,12 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
         }
     }
     energy1 = WindowingEnergy(self->window, self->dataBuf, self->anaLen, winData);
-    if (energy1 == 0.0) {
+    if (energy1 == 0.0)
+    {
         // Synthesize the special case of zero input.
         // Read out fully processed segment.
-        for (i = self->windShift; i < self->blockLen + self->windShift; i++) {
+        for (i = self->windShift; i < self->blockLen + self->windShift; i++)
+        {
             fout[i - self->windShift] = self->syntBuf[i];
         }
         // Update synthesis buffer.
@@ -1925,12 +2136,15 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
 
         for (i = 0; i < self->blockLen; ++i)
             outFrame[0][i] =
-                    SPL_SAT(32767, fout[i], (-32768));
+                SPL_SAT(32767, fout[i], (-32768));
 
         // For time-domain gain of HB.
-        if (flagHB == 1) {
-            for (i = 0; i < num_high_bands; ++i) {
-                for (j = 0; j < self->blockLen; ++j) {
+        if (flagHB == 1)
+        {
+            for (i = 0; i < num_high_bands; ++i)
+            {
+                for (j = 0; j < self->blockLen; ++j)
+                {
                     outFrameHB[i][j] = SPL_SAT(32767,
                                                self->dataBufHB[i][j],
                                                (-32768));
@@ -1943,22 +2157,28 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
 
     FFT(self, winData, self->anaLen, self->magnLen, real, imag, magn, NULL, 0, NULL, NULL);
 
-    if (self->blockInd < END_STARTUP_SHORT) {
-        for (i = 0; i < self->magnLen; i++) {
+    if (self->blockInd < END_STARTUP_SHORT)
+    {
+        for (i = 0; i < self->magnLen; i++)
+        {
             self->initMagnEst[i] += magn[i];
         }
     }
 
     ComputeDdBasedWienerFilter(self, magn, theFilter);
-    if (self->blockInd < END_STARTUP_SHORT) {
-        for (i = 0; i < self->magnLen; i++) {
+    if (self->blockInd < END_STARTUP_SHORT)
+    {
+        for (i = 0; i < self->magnLen; i++)
+        {
             theFilterTmp[i] = 1.f - (self->overdrive * self->parametricNoise[i]) / (self->initMagnEst[i] + epsilon);
             // Flooring bottom.
-            if (theFilterTmp[i] < self->denoiseBound) {
+            if (theFilterTmp[i] < self->denoiseBound)
+            {
                 theFilterTmp[i] = self->denoiseBound;
             }
             // Flooring top.
-            if (theFilterTmp[i] > 1.f) {
+            if (theFilterTmp[i] > 1.f)
+            {
                 theFilterTmp[i] = 1.f;
             }
             // Weight the two suppression filters.
@@ -1970,17 +2190,24 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
             real[i] *= self->smooth[i];
             imag[i] *= self->smooth[i];
         }
-    } else {
-        for (i = 0; i < self->magnLen; i++) {
+    }
+    else
+    {
+        for (i = 0; i < self->magnLen; i++)
+        {
             // Flooring bottom.
-            if (theFilter[i] < self->denoiseBound) {
+            if (theFilter[i] < self->denoiseBound)
+            {
                 theFilter[i] = self->denoiseBound;
             }
             // Flooring top.
-            if (theFilter[i] > 1.f) {
+            if (theFilter[i] > 1.f)
+            {
                 theFilter[i] = 1.f;
                 self->smooth[i] = theFilter[i];
-            } else {
+            }
+            else
+            {
                 self->smooth[i] = theFilter[i];
                 real[i] *= self->smooth[i];
                 imag[i] *= self->smooth[i];
@@ -1996,23 +2223,28 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
     // Scale factor: only do it after END_STARTUP_LONG time.
     factor = 1.f;
 
-    if (self->gainmap == 1 && self->blockInd > END_STARTUP_LONG) {
+    if (self->gainmap == 1 && self->blockInd > END_STARTUP_LONG)
+    {
         factor1 = 1.f;
         factor2 = 1.f;
         energy2 = Energy(winData, self->anaLen);
         gain = sqrtf(energy2 / (energy1 + epsilon) + epsilon_squ);
 
         // Scaling for new version.
-        if (gain > B_LIM) {
+        if (gain > B_LIM)
+        {
             factor1 = 1.f + 1.3f * (gain - B_LIM);
-            if (gain * factor1 > 1.f) {
+            if (gain * factor1 > 1.f)
+            {
                 factor1 = 1.f / gain;
             }
         }
-        if (gain < B_LIM) {
+        if (gain < B_LIM)
+        {
             // Don't reduce scale too much for pause regions:
             // attenuation here should be controlled by flooring.
-            if (gain <= self->denoiseBound) {
+            if (gain <= self->denoiseBound)
+            {
                 gain = self->denoiseBound;
             }
             factor2 = 1.f - 0.3f * (B_LIM - gain);
@@ -2024,11 +2256,13 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
     }  // Out of self->gainmap == 1.
 
     // Synthesis.
-    for (i = 0; i < self->anaLen; i++) {
+    for (i = 0; i < self->anaLen; i++)
+    {
         self->syntBuf[i] += factor * winData[i] * self->window[i];
     }
     // Read out fully processed segment.
-    for (i = self->windShift; i < self->blockLen + self->windShift; i++) {
+    for (i = self->windShift; i < self->blockLen + self->windShift; i++)
+    {
         fout[i - self->windShift] = self->syntBuf[i];
     }
     // Update synthesis buffer.
@@ -2036,14 +2270,16 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
 
     for (i = 0; i < self->blockLen; ++i)
         outFrame[0][i] =
-                SPL_SAT(32767, fout[i], (-32768));
+            SPL_SAT(32767, fout[i], (-32768));
 
     // For time-domain gain of HB.
-    if (flagHB == 1) {
+    if (flagHB == 1)
+    {
         // Average speech prob from low band.
         // Average over second half (i.e., 4->8kHz) of frequencies spectrum.
         avgProbSpeechHB = 0;
-        for (i = self->magnLen - deltaBweHB - 1; i < self->magnLen - 1; i++) {
+        for (i = self->magnLen - deltaBweHB - 1; i < self->magnLen - 1; i++)
+        {
             avgProbSpeechHB += self->speechProb[i];
         }
         avgProbSpeechHB = avgProbSpeechHB / ((float) deltaBweHB);
@@ -2052,7 +2288,8 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
         // for high band suppression purposes.
         sumMagnAnalyze = 0;
         sumMagnProcess = 0;
-        for (i = 0; i < self->magnLen; ++i) {
+        for (i = 0; i < self->magnLen; ++i)
+        {
             sumMagnAnalyze += self->magnPrevAnalyze[i];
             sumMagnProcess += self->magnPrevProcess[i];
         }
@@ -2060,7 +2297,8 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
         // Average filter gain from low band.
         // Average over second half (i.e., 4->8kHz) of frequencies spectrum.
         avgFilterGainHB = 0;
-        for (i = self->magnLen - deltaGainHB - 1; i < self->magnLen - 1; i++) {
+        for (i = self->magnLen - deltaGainHB - 1; i < self->magnLen - 1; i++)
+        {
             avgFilterGainHB += self->smooth[i];
         }
         avgFilterGainHB = avgFilterGainHB / ((float) (deltaGainHB));
@@ -2069,83 +2307,101 @@ void WebRtcNs_ProcessCore(NoiseSuppressionC *self,
         gainModHB = 0.5f + 0.5f * tanhf(gainMapParHB * avgProbSpeechHBTmp);
         // Combine gain with low band gain.
         float gainTimeDomainHB = 0.5f * (gainModHB + avgFilterGainHB);
-        if (avgProbSpeechHB >= 0.5f) {
+        if (avgProbSpeechHB >= 0.5f)
+        {
             gainTimeDomainHB = 0.25f * gainModHB + 0.75f * avgFilterGainHB;
         }
         gainTimeDomainHB = gainTimeDomainHB * decayBweHB;
         // Make sure gain is within flooring range.
         // Flooring bottom.
-        if (gainTimeDomainHB < self->denoiseBound) {
+        if (gainTimeDomainHB < self->denoiseBound)
+        {
             gainTimeDomainHB = self->denoiseBound;
         }
         // Flooring top.
-        if (gainTimeDomainHB > 1.f) {
+        if (gainTimeDomainHB > 1.f)
+        {
             gainTimeDomainHB = 1.f;
         }
         // Apply gain.
-        for (i = 0; i < num_high_bands; ++i) {
-            for (j = 0; j < self->blockLen; j++) {
+        for (i = 0; i < num_high_bands; ++i)
+        {
+            for (j = 0; j < self->blockLen; j++)
+            {
                 outFrameHB[i][j] =
-                        SPL_SAT(32767,
-                                gainTimeDomainHB * self->dataBufHB[i][j],
-                                (-32768));
+                    SPL_SAT(32767,
+                            gainTimeDomainHB * self->dataBufHB[i][j],
+                            (-32768));
             }
         }
     }  // End of H band gain computation.
 }
 
-NsHandle *WebRtcNs_Create() {
+NsHandle *WebRtcNs_Create()
+{
     NoiseSuppressionC *self = (NoiseSuppressionC *) malloc(sizeof(NoiseSuppressionC));
-    if (self != NULL) {
+    if (self != NULL)
+    {
         self->initFlag = 0;
     }
     return (NsHandle *) self;
 }
 
-void WebRtcNs_Free(NsHandle *NS_inst) {
+void WebRtcNs_Free(NsHandle *NS_inst)
+{
     if (NS_inst)
         free(NS_inst);
 }
 
-int WebRtcNs_Init(NsHandle *NS_inst, uint32_t fs) {
+int WebRtcNs_Init(NsHandle *NS_inst, uint32_t fs)
+{
     return WebRtcNs_InitCore((NoiseSuppressionC *) NS_inst, fs);
 }
 
-int WebRtcNs_set_policy(NsHandle *NS_inst, int mode) {
+int WebRtcNs_set_policy(NsHandle *NS_inst, int mode)
+{
     return WebRtcNs_set_policy_core((NoiseSuppressionC *) NS_inst, mode);
 }
 
-void WebRtcNs_Analyze(NsHandle *NS_inst, const int16_t *spframe) {
+void WebRtcNs_Analyze(NsHandle *NS_inst, const int16_t *spframe)
+{
     WebRtcNs_AnalyzeCore((NoiseSuppressionC *) NS_inst, spframe);
 }
 
 void WebRtcNs_Process(NsHandle *NS_inst,
                       const int16_t *const *spframe,
                       size_t num_bands,
-                      int16_t *const *outframe) {
+                      int16_t *const *outframe)
+{
     WebRtcNs_ProcessCore((NoiseSuppressionC *) NS_inst, spframe, num_bands,
                          outframe);
 }
 
-float WebRtcNs_prior_speech_probability(NsHandle *handle) {
+float WebRtcNs_prior_speech_probability(NsHandle *handle)
+{
     NoiseSuppressionC *self = (NoiseSuppressionC *) handle;
-    if (handle == NULL) {
+    if (handle == NULL)
+    {
         return -1;
     }
-    if (self->initFlag == 0) {
+    if (self->initFlag == 0)
+    {
         return -1;
     }
     return self->priorSpeechProb;
 }
 
-const float *WebRtcNs_noise_estimate(const NsHandle *handle) {
+const float *WebRtcNs_noise_estimate(const NsHandle *handle)
+{
     const NoiseSuppressionC *self = (const NoiseSuppressionC *) handle;
-    if (handle == NULL || self->initFlag == 0) {
+    if (handle == NULL || self->initFlag == 0)
+    {
         return NULL;
     }
     return self->noise;
 }
 
-size_t WebRtcNs_num_freq() {
+size_t WebRtcNs_num_freq()
+{
     return HALF_ANAL_BLOCKL;
 }

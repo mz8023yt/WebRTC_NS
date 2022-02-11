@@ -18,12 +18,15 @@
 #endif
 
 static
-uint64_t nanotimer() {
+uint64_t nanotimer()
+{
     static int ever = 0;
 #if defined(__APPLE__)
     static mach_timebase_info_data_t frequency;
-    if (!ever) {
-        if (mach_timebase_info(&frequency) != KERN_SUCCESS) {
+    if (!ever)
+    {
+        if (mach_timebase_info(&frequency) != KERN_SUCCESS)
+        {
             return 0;
         }
         ever = 1;
@@ -31,7 +34,8 @@ uint64_t nanotimer() {
     return  (mach_absolute_time() * frequency.numer / frequency.denom);
 #elif defined(_WIN32)
     static LARGE_INTEGER frequency;
-    if (!ever) {
+    if (!ever)
+    {
         QueryPerformanceFrequency(&frequency);
         ever = 1;
     }
@@ -40,8 +44,10 @@ uint64_t nanotimer() {
     return (t.QuadPart * (uint64_t) 1e9) / frequency.QuadPart;
 #else // __linux
     struct timespec t;
-    if (!ever) {
-        if (clock_gettime(CLOCK_MONOTONIC, &t) != 0) {
+    if (!ever)
+    {
+        if (clock_gettime(CLOCK_MONOTONIC, &t) != 0)
+        {
             return 0;
         }
         ever = 1;
@@ -52,15 +58,18 @@ uint64_t nanotimer() {
 }
 
 
-static double now() {
+static double now()
+{
     static uint64_t epoch = 0;
-    if (!epoch) {
+    if (!epoch)
+    {
         epoch = nanotimer();
     }
     return (nanotimer() - epoch) / 1e9;
 };
 
-double calcElapsed(double start, double end) {
+double calcElapsed(double start, double end)
+{
     double took = -start;
     return took + end;
 }

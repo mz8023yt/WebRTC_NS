@@ -58,7 +58,8 @@ typedef struct NsHandleT NsHandle;
 extern "C" {
 #endif
 
-typedef struct NSParaExtract_ {
+typedef struct NSParaExtract_
+{
     // Bin size of histogram.
     float binSizeLrt;
     float binSizeSpecFlat;
@@ -94,7 +95,8 @@ typedef struct NSParaExtract_ {
 
 } NSParaExtract;
 
-typedef struct NoiseSuppressionC_ {
+typedef struct NoiseSuppressionC_
+{
     uint32_t fs;
     size_t blockLen;
     size_t windShift;
