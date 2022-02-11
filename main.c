@@ -133,15 +133,22 @@ enum nsLevel
 
 int nsProcess(int16_t *buffer, uint32_t sampleRate, uint64_t samplesCount, uint32_t channels, enum nsLevel level)
 {
-    if (buffer == nullptr) return -1;
-    if (samplesCount == 0) return -1;
+    if (buffer == nullptr)
+        return -1;
+    if (samplesCount == 0)
+        return -1;
+
+    /* 音频帧帧长为 10ms, 如果 10ms 的采样点个数小于 160, 则
     size_t samples = MIN(160, sampleRate / 100);
-    if (samples == 0) return -1;
+    if (samples == 0)
+        return -1;
+
     uint32_t num_bands = 1;
     int16_t *input = buffer;
     size_t frames = (samplesCount / (samples * channels));
     int16_t *frameBuffer = (int16_t *) malloc(sizeof(*frameBuffer) * channels * samples);
     NsHandle **NsHandles = (NsHandle **) malloc(channels * sizeof(NsHandle *));
+
     if (NsHandles == NULL || frameBuffer == NULL)
     {
         if (NsHandles)
@@ -151,6 +158,7 @@ int nsProcess(int16_t *buffer, uint32_t sampleRate, uint64_t samplesCount, uint3
         fprintf(stderr, "malloc error.\n");
         return -1;
     }
+
     for (int i = 0; i < channels; i++)
     {
         NsHandles[i] = WebRtcNs_Create();
@@ -219,22 +227,25 @@ int nsProcess(int16_t *buffer, uint32_t sampleRate, uint64_t samplesCount, uint3
 
 void noise_suppression(char *in_file, char *out_file)
 {
-    //音频采样率
-    uint32_t sampleRate = 0;
-    uint32_t channels = 0;
-    //总音频采样数
-    uint64_t inSampleCount = 0;
-    int16_t *inBuffer = wavRead_int16(in_file, &sampleRate, &inSampleCount, &channels);
+    uint32_t sampleRate = 0;            // 采样率
+    uint32_t channels = 0;              // 通道数
+    uint64_t inSampleCount = 0;         // 音频总采样数
 
-    //如果加载成功
+    /* 解析 wav/mp3 音频格式头, 获取音频采样率/采样数/通道数/音频PCM数据 */
+    int16_t *inBuffer = wavRead_int16(in_file, &sampleRate, &inSampleCount, &channels);
     if (inBuffer != nullptr)
     {
+        /* 记录降噪处理开始时刻时间点 */
         double startTime = now();
+
+        /* 执行降噪处理 */
         nsProcess(inBuffer, sampleRate, inSampleCount, channels, kModerate);
+
+        /* 记录降噪处理结束时刻时间点 */
         double time_interval = calcElapsed(startTime, now());
         printf("time interval: %d ms\n ", (int) (time_interval * 1000));
 
-
+        /* 创建输出音频文件, 文件格式为 wav 格式 */
         wavWrite_int16(out_file, inBuffer, sampleRate, inSampleCount, channels);
         free(inBuffer);
     }
@@ -252,8 +263,12 @@ int main(int argc, char *argv[])
     char fname[256];
     char ext[256];
     char out_file[1024];
+
+    /* 根据输入文件名后追加 out 后缀, 创建输出文件名 */
     splitpath(in_file, drive, dir, fname, ext);
     sprintf(out_file, "%s%s%s_out%s", drive, dir, fname, ext);
+
+    /* 降噪处理 */
     noise_suppression(in_file, out_file);
 
     printf("press any key to exit. \n");
